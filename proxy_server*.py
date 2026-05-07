@@ -1,35 +1,40 @@
 import socket
 import json
-PORT = 8080
 HOST = "127.0.0.1"
+PORT = 8080
 
 blockList = {"192.168.1.1"}
 
 proxy = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
 proxy.bind((HOST, PORT))
 proxy.listen()
 
 conn, addr = proxy.accept()
 
-data = conn.recv(4096)
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
+data = conn.recv(4096)
 json_str = data.decode("utf-8")
 payload = json.loads(json_str)
 
+server.connect((payload["server_ip"], payload["server_port"]))
+
 
 if payload["server_ip"] in blockList: #return error to client
+    print("yooooo")
     conn.sendall(b"Error")
+    conn.close()
+    proxy.close()
+    server.close()
+    exit()
 
 else:
-    conn.sendall(b"No error")
+   
+    server.sendall(data)
 
-    
+    response = server.recv(4096)
 
-
-
-
-
+    conn.sendall(response)
 
 
 '''
