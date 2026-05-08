@@ -19,9 +19,8 @@ payload = json.loads(json_str)
 
 server.connect((payload["server_ip"], payload["server_port"]))
 
-
 if payload["server_ip"] in blockList: #return error to client
-    print("yooooo")
+
     conn.sendall(b"Error")
     conn.close()
     proxy.close()
@@ -30,7 +29,7 @@ if payload["server_ip"] in blockList: #return error to client
 
 else:
    
-    server.sendall(data)
+    server.sendall(payload["message"].encode())
 
     response = server.recv(4096)
 

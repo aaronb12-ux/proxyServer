@@ -19,9 +19,9 @@ byte_data = json_data.encode("utf-8")
 
 client.sendall(byte_data)
 
-data, addr = client.recv(1024)
+data = client.recv(1024)
 
-print(f"We received the message: {data.decode()}")
+print(f"{data.decode()}")
 
 
 '''
