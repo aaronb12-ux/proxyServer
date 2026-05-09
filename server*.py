@@ -8,11 +8,14 @@ server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((HOST, PORT))
 server.listen()
 
-conn, addr = server.accept() #accept data from the proxy
+while True:
 
-data = conn.recv(4096)
+    conn, addr = server.accept() #accept data from the proxy
 
-conn.sendall(b"pong")
+    data = conn.recv(4096)
 
+    conn.sendall(b"pong")
+
+    conn.close()
 
 

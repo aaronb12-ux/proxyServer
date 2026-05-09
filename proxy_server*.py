@@ -9,31 +9,35 @@ proxy = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 proxy.bind((HOST, PORT))
 proxy.listen()
 
-conn, addr = proxy.accept()
+while True:
 
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    conn, addr = proxy.accept()
 
-data = conn.recv(4096)
-json_str = data.decode("utf-8")
-payload = json.loads(json_str)
+    data = conn.recv(4096)
 
-server.connect((payload["server_ip"], payload["server_port"]))
+    json_str = data.decode("utf-8")
 
-if payload["server_ip"] in blockList: #return error to client
+    payload = json.loads(json_str)
 
-    conn.sendall(b"Error")
-    conn.close()
-    proxy.close()
-    server.close()
-    exit()
+    if payload["server_ip"] in blockList: #return error to client
 
-else:
+        conn.sendall(b"Error")
+        conn.close()
+        continue
+
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    server.connect((payload["server_ip"], payload["server_port"]))
    
     server.sendall(payload["message"].encode())
 
     response = server.recv(4096)
 
     conn.sendall(response)
+
+    conn.close()
+    server.close() 
+    
 
 
 '''
